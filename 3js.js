@@ -1,18 +1,46 @@
 
+
+//document.body.style.backgroundImage = "url('./05.-Foyer_828-Moaniala-Street.jpg')"
+
 let scene = new THREE.Scene()
-let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight)
+const loader = new THREE.TextureLoader();
+loader.load('https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg' , function(texture)
+{
+    scene.background = texture; 
+})
+const input = document.createElement('input')
+input.type='color'
+input.id='inputID'
+input.setAttribute('value', '#0000ff')
+console.log(input)
+let inputID = document.getElementById('inputID')
+document.querySelector('body').appendChild(input)
+
+let mouseState = false
+//scene.background = new THREE.Color(0x0c5a0c)
+
+let camera = new THREE.PerspectiveCamera(80, window.innerWidth/window.innerHeight)
 let renderer = new THREE.WebGLRenderer({antialias: true})
+
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-let geometry = new THREE.BoxGeometry(1, 1, 1)
-let material = new THREE.MeshBasicMaterial({color: 0xff0000})
-let cube = new THREE.Mesh(geometry, material)
-scene.add(cube)
+let geometry = new THREE.TorusGeometry(10, 2, 16, 80)
+let materials = new THREE.MeshBasicMaterial({color: input.value})
+let mesh = new THREE.Mesh(geometry, materials)
+scene.add(mesh)
+let geo = new THREE.EdgesGeometry(mesh.geometry)
+let mat = new THREE.LineBasicMaterial({color: 0x000000})
+let wireframe = new THREE.LineSegments(geo, mat)
+mesh.add(wireframe)
 
-cube.position.z = -5
+
+
 function animate() {
-    cube.rotation.x += 0.01
+    mesh.rotation.x += 0.02
+    mesh.rotation.y += 0.02
+    mesh.position.z = -30
+    
     renderer.render(scene, camera)
     requestAnimationFrame(animate)
 }
